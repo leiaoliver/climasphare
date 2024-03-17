@@ -15,16 +15,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.com.fiap.climasphere.R
 import br.com.fiap.climasphere.inter
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(navController: NavController) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -55,7 +57,7 @@ fun SplashScreen() {
             Spacer(modifier = Modifier.height(13.dp))
             Text(
                 text = "Previsões precisas, alertas de tempestade e dicas para se preparar.",
-                color = Color(0xFFEAEAEA),
+                color = colorResource(id = R.color.white),
                 textAlign = TextAlign.Center,
                 fontSize = 13.sp,
                 fontFamily = inter,
@@ -74,7 +76,7 @@ fun SplashScreen() {
             Button(
                 onClick = {},
                 shape = RoundedCornerShape(11.dp),
-                colors = ButtonDefaults.buttonColors(Color(0xFF1A3546)),
+                colors = ButtonDefaults.buttonColors(colorResource(R.color.purple_200)),
                 modifier = Modifier
                     .width(300.dp)
                     .height(50.dp)
@@ -84,22 +86,6 @@ fun SplashScreen() {
                     fontSize = 16.sp,
                     fontFamily = inter,
                     fontWeight = FontWeight.Bold
-                )
-            }
-            Button(
-                onClick = {},
-                shape = RoundedCornerShape(11.dp),
-                colors = ButtonDefaults.buttonColors(Color.Transparent),
-                modifier = Modifier
-                    .width(130.dp)
-                    .height(40.dp)
-            ) {
-                Text(
-                    text = "Agora não",
-                    fontSize = 16.sp,
-                    fontFamily = inter,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
                 )
             }
         }
