@@ -3,6 +3,7 @@ package br.com.fiap.climasphere.screens
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -78,10 +79,9 @@ fun HomeScreen(navController: NavController) {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ){
-            Button(
-                onClick = {navController.navigate("manage_cities")},
+            Box(
                 modifier = Modifier
-                    .background(Color(0xFF265069))
+                    .clickable { navController.navigate("manage_cities") }
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.plus),

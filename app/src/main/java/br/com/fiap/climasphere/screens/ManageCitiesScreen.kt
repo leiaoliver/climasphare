@@ -1,5 +1,7 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -24,11 +28,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import br.com.fiap.climasphere.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,18 +63,36 @@ fun ManageCitiesScreen(navController: NavController) {
                 .fillMaxSize()
 
         ){
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start, // Alinhar os elementos à esquerda
+                verticalAlignment = Alignment.CenterVertically // Alinhar os elementos verticalmente
             ) {
+          Box(
+              modifier = Modifier
+                  .clickable { navController.navigate("home") }
+          )
+          {
+              Image(
+                  painter = painterResource(id = R.drawable.seta_esquerda),
+                  contentDescription = "Icon",
+                  modifier = Modifier
+                      .width(35.dp)
+                      .height(35.dp)
+                      .padding(end = 8.dp) // Adicionar espaço à direita do ícone
+              )
+
+          }
                 Text(
                     text = "Gerenciar cidades",
                     style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Bold),
-                    color = Color.White
+                    color = Color.White,
+                            modifier = Modifier
+                                 .padding(start = 40.dp) // Adicionar espaço à direita do ícone
+
                 )
             }
+
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -78,6 +102,7 @@ fun ManageCitiesScreen(navController: NavController) {
                 horizontalArrangement = Arrangement.Center
             ){
                 var text by remember { mutableStateOf("") }
+
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
