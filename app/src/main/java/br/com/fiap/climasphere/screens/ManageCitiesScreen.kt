@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageCitiesScreen(navController: NavController) {
     var text by remember {
@@ -76,23 +78,24 @@ fun ManageCitiesScreen(navController: NavController) {
                 horizontalArrangement = Arrangement.Center
             ){
                 var text by remember { mutableStateOf("") }
-
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, Color.White, RoundedCornerShape(32.dp))
-                    ,
+                    modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     label = {
-                        Text(text = "Qual o seu email?")
+                        Text(text = "Inserir local", color = Color.White) // Definir cor do label como branco
                     },
                     placeholder = {
-                        Text(text = "Digite seu email")
+                        Text(text = "Digite seu email", color = Color.White) // Definir cor do placeholder como branco
                     },
+                    textStyle = TextStyle(color = Color.White), // Definir cor do texto digitado como branco
                     shape = RoundedCornerShape(32.dp),
-
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        cursorColor = Color.White, // Definir cor do cursor como branco
+                        focusedBorderColor = Color.White, // Definir cor da borda quando o campo está em foco como branco
+                        unfocusedBorderColor = Color.White // Definir cor da borda quando o campo não está em foco como branco
+                    )
                 )
 
 
