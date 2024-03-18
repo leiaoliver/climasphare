@@ -37,27 +37,28 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
 import androidx.compose.runtime.*
+import com.google.gson.JsonParser
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.Console
+import org.json.JSONException
+import org.json.JSONObject
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
+
 
 
 @Composable
 fun HomeScreen(navController: NavController) {
 
-    var temperature by remember { mutableStateOf("") }
+    var temperatureData by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
     LaunchedEffect(Unit) {
-        GlobalScope.launch(Dispatchers.IO) {
-            temperature = fetchTemperature()
-            Log.i("TAG", "MeuComponente: $temperature")
-        }
+        temperatureData = fetchTemperature()
     }
-
-
 
     Box(
         contentAlignment = Alignment.TopStart,
@@ -101,13 +102,20 @@ fun HomeScreen(navController: NavController) {
                 color = Color.White
             )
 
-            Image(
-                painter = painterResource(id = R.drawable.config),
-                contentDescription = "Icon Plus",
+            Box(
                 modifier = Modifier
-                    .width(20.dp)
-                    .height(20.dp)
-            )
+                    .clickable { navController.navigate("configs")
+                    }
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.config),
+                    contentDescription = "Icon Plus",
+                    modifier = Modifier
+                        .width(20.dp)
+                        .height(20.dp)
+                )
+            }
+
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -127,11 +135,18 @@ fun HomeScreen(navController: NavController) {
 
         ){
             Column {
-                Text(
-                    text = temperature,
-                    style = TextStyle(fontSize = 64.sp, fontWeight = FontWeight.Bold),
+                temperatureData?.let { (minTemperature, maxTemperature) ->
+                    Text(
+                        text = "Mínima: $minTemperature°C | Máxima: $maxTemperature°C",
+                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+                        color = Color.White
+                    )
+                } ?: Text(
+                    text = "N/A",
+                    style = TextStyle(fontSize = 50.sp, fontWeight = FontWeight.Bold),
                     color = Color.White
                 )
+
                 Text(
                     text = "Pancadas de chuva",
                     style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium),
@@ -316,30 +331,37 @@ fun HomeScreen(navController: NavController) {
     }
 }
 
-suspend fun fetchTemperature(): String {
-    val username = "clima_oliveira_leia"
-    val password = "IR5lkK5q40"
-    val baseUrl = "https://api.meteomatics.com"
-    val endpoint = "/2024-03-17T00:00:00Z/t_2m:C/52.520551,13.461804/html"
+
+suspend fun fetchTemperature(): Pair<Int, Int>? {
+    val token = "c7629c8095c32b502bb9efb0b9abbbc3"
+    val localeId = "3477" // ID de São Paulo
 
     val client = OkHttpClient()
 
     val request = Request.Builder()
-        .url(baseUrl + endpoint)
-        .header("Authorization", Credentials.basic(username, password))
+        .url("http://apiadvisor.climatempo.com.br/api/v1/climate/temperature/locale/$localeId?token=$token")
         .build()
 
     return try {
         val response = withContext(Dispatchers.IO) {
             client.newCall(request).execute()
         }
+
         val responseBody = response.body?.string()
 
-        // Processar a resposta aqui e extrair a temperatura
-
-        responseBody ?: ""
-    } catch (e: IOException) {
+        if (response.isSuccessful && !responseBody.isNullOrEmpty()) {
+            val jsonData = JSONObject(responseBody)
+            val temperatureData = jsonData.getJSONArray("data").getJSONObject(0).getJSONObject("climate_temperature").getJSONObject("last_year")
+            val minTemperature = temperatureData.getInt("min")
+            val maxTemperature = temperatureData.getInt("max")
+            Pair(minTemperature, maxTemperature)
+        } else {
+            null
+        }
+    } catch (e: Exception) {
         e.printStackTrace()
-        ""
+        null
     }
 }
+
+

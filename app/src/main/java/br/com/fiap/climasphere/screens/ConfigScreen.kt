@@ -1,5 +1,7 @@
 package br.com.fiap.climasphere.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -61,15 +63,18 @@ fun ConfigScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()
-            .padding(top = 40.dp)
+
+            .background(Color(0xFF265069))
     ) {
         Column(
+            modifier = Modifier
+                .padding(top = 40.dp)
         ) {
             Box(
                 contentAlignment = Alignment.Center
             ) {
                 IconButton(
-                    onClick = { "" },
+                    onClick = { navController.navigate("home") },
                     modifier = Modifier
                         .offset(x = (-180).dp)
                 ) {

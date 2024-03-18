@@ -72,5 +72,14 @@ dependencies {
 
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation ("org.jsoup:jsoup:1.14.3")
+    implementation ("com.google.code.gson:gson:2.8.8")
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation ("com.google.code.gson:gson:2.8.8")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.2")
+
+
+
 
 }

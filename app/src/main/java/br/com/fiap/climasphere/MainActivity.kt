@@ -40,9 +40,10 @@ class MainActivity : ComponentActivity() {
                     composable("manage_cities") {
                         ManageCitiesScreen(navController)
                     }
-                    composable("config_screen") {
+                    composable("configs") {
                         ConfigScreen(navController)
                     }
+
                 }
             }
         }
