@@ -171,7 +171,7 @@ fun ConfigScreen(navController: NavController) {
                                     unfocusedContainerColor = colorResource(id = R.color.white),
                                     focusedLabelColor = Color.Black,
                                     unfocusedLabelColor = Color.Black,
-                                        focusedIndicatorColor = colorResource(id = R.color.purple_200)
+                                        focusedIndicatorColor = colorResource(id = R.color.dark_blue)
                                 ),
                                 value = feedback,
                                 onValueChange = { feedback = it },
@@ -190,7 +190,7 @@ fun ConfigScreen(navController: NavController) {
                                     showDialog = false
                                     feedback = ""
                                 },
-                                colors = ButtonDefaults.buttonColors(colorResource(R.color.purple_200))
+
                             ) {
                                 Text(
                                     text = "Enviar",

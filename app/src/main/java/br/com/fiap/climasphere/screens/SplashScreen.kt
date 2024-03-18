@@ -1,6 +1,7 @@
 package br.com.fiap.climasphere.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +32,7 @@ fun SplashScreen(navController: NavController) {
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFF265069))
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -74,12 +76,13 @@ fun SplashScreen(navController: NavController) {
                     .height(380.dp)
             )
             Button(
-                onClick = {},
+                onClick = {navController.navigate("notification")},
                 shape = RoundedCornerShape(11.dp),
-                colors = ButtonDefaults.buttonColors(colorResource(R.color.purple_200)),
+                colors = ButtonDefaults.buttonColors(colorResource(R.color.dark_blue)),
                 modifier = Modifier
                     .width(300.dp)
                     .height(50.dp)
+
             ) {
                 Text(
                     text = "Vamos começar",

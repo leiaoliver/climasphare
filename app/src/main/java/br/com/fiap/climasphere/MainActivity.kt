@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.composable
 import br.com.fiap.climasphere.screens.ConfigScreen
+import br.com.fiap.climasphere.screens.NotificationScreen
 import br.com.fiap.climasphere.screens.SplashScreen
 
 
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
             ClimaSphereTheme {
                 // A surface container using the 'background' color from the theme
                 val navController = rememberNavController()
-                NavHost(navController, startDestination = "home") {
+                NavHost(navController, startDestination = "splash") {
                     composable("splash") {
                         SplashScreen(navController)
                     }
@@ -42,6 +43,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("configs") {
                         ConfigScreen(navController)
+                    }
+                    composable("notification") {
+                        NotificationScreen(navController)
                     }
 
                 }

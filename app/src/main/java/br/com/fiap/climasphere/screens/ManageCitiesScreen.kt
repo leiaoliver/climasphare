@@ -178,3 +178,26 @@ fun ManageCitiesScreen(navController: NavController) {
 
 }
 
+// Função para buscar países e estados da API Climatempo
+suspend fun fetchCountriesAndStates(query: String): List<String> {
+    // Simulação de busca na API Climatempo (substitua com sua lógica real de busca)
+    return listOf("Brazil", "Argentina", "United States", "São Paulo", "Rio de Janeiro")
+}
+
+// Função para renderizar as sugestões no componente OutlinedTextField
+@Composable
+fun RenderSuggestions(query: String, suggestions: List<String>, onSuggestionSelected: (String) -> Unit) {
+    if (query.isNotBlank() && suggestions.isNotEmpty()) {
+        Column {
+            suggestions.forEach { suggestion ->
+                Text(
+                    text = suggestion,
+                    style = TextStyle(color = Color.White),
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable { onSuggestionSelected(suggestion) }
+                )
+            }
+        }
+    }
+}

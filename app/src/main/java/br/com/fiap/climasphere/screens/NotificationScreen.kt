@@ -33,16 +33,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.com.fiap.climasphere.R
 import br.com.fiap.climasphere.inter
 
 @Composable
-fun NotificationScreen() {
+fun NotificationScreen(navController: NavController) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()
+            .background(Color(0xFF265069))
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -183,7 +185,7 @@ fun NotificationScreen() {
                     )
                 }
                 Button(
-                    onClick = {},
+                    onClick = {navController.navigate("home")},
                     shape = RoundedCornerShape(11.dp),
                     colors = ButtonDefaults.buttonColors(Color.Transparent),
                     modifier = Modifier
