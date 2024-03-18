@@ -339,7 +339,7 @@ suspend fun fetchTemperature(): Pair<Int, Int>? {
     val client = OkHttpClient()
 
     val request = Request.Builder()
-        .url("http://apiadvisor.climatempo.com.br/api/v1/climate/temperature/locale/$localeId?token=$token")
+        .url("http://apiadvisor.climatempo.com.br/api/v1/weather/locale/$localeId/current?token=$token")
         .build()
 
     return try {
@@ -351,11 +351,12 @@ suspend fun fetchTemperature(): Pair<Int, Int>? {
 
         if (response.isSuccessful && !responseBody.isNullOrEmpty()) {
             val jsonData = JSONObject(responseBody)
-            val temperatureData = jsonData.getJSONArray("data").getJSONObject(0).getJSONObject("climate_temperature").getJSONObject("last_year")
+            val temperatureData = jsonData.getJSONObject("data").getJSONObject("temperature")
             val minTemperature = temperatureData.getInt("min")
             val maxTemperature = temperatureData.getInt("max")
             Pair(minTemperature, maxTemperature)
         } else {
+            Log.e("fetchTemperature", "Failed to fetch temperature. Response: $response")
             null
         }
     } catch (e: Exception) {
@@ -363,5 +364,4 @@ suspend fun fetchTemperature(): Pair<Int, Int>? {
         null
     }
 }
-
 
