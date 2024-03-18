@@ -54,11 +54,13 @@ import org.jsoup.nodes.Element
 @Composable
 fun HomeScreen(navController: NavController) {
 
-    var temperatureData by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    var temperature by remember { mutableStateOf(0.0) } // Inicializando como Double
 
     LaunchedEffect(Unit) {
-        temperatureData = fetchTemperature()
+        temperature = fetchTemperature()
     }
+
+
 
     Box(
         contentAlignment = Alignment.TopStart,
@@ -104,7 +106,7 @@ fun HomeScreen(navController: NavController) {
 
             Box(
                 modifier = Modifier
-                    .clickable { navController.navigate("configs")
+                    .clickable { navController.navigate("config_screen")
                     }
             ) {
                 Image(
@@ -135,17 +137,13 @@ fun HomeScreen(navController: NavController) {
 
         ){
             Column {
-                temperatureData?.let { (minTemperature, maxTemperature) ->
-                    Text(
-                        text = "Mínima: $minTemperature°C | Máxima: $maxTemperature°C",
-                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
-                        color = Color.White
-                    )
-                } ?: Text(
-                    text = "N/A",
+                Text(
+                    text = "${temperature.format(1)} °C",
                     style = TextStyle(fontSize = 50.sp, fontWeight = FontWeight.Bold),
                     color = Color.White
                 )
+
+
 
                 Text(
                     text = "Pancadas de chuva",
@@ -330,38 +328,41 @@ fun HomeScreen(navController: NavController) {
     }
     }
 }
+fun Double.format(digits: Int) = "%.${digits}f".format(this)
 
-
-suspend fun fetchTemperature(): Pair<Int, Int>? {
-    val token = "c7629c8095c32b502bb9efb0b9abbbc3"
-    val localeId = "3477" // ID de São Paulo
+suspend fun fetchTemperature(): Double {
+    val username = "clima_oliveira_leia"
+    val password = "IR5lkK5q40"
+    val baseUrl = "https://api.meteomatics.com"
+    val endpoint = "/now/t_2m:C/-23.5505,-46.6333/csv"
 
     val client = OkHttpClient()
 
     val request = Request.Builder()
-        .url("http://apiadvisor.climatempo.com.br/api/v1/weather/locale/$localeId/current?token=$token")
+        .url("$baseUrl$endpoint")
+        .header("Authorization", Credentials.basic(username, password))
         .build()
 
     return try {
         val response = withContext(Dispatchers.IO) {
             client.newCall(request).execute()
         }
-
         val responseBody = response.body?.string()
 
-        if (response.isSuccessful && !responseBody.isNullOrEmpty()) {
-            val jsonData = JSONObject(responseBody)
-            val temperatureData = jsonData.getJSONObject("data").getJSONObject("temperature")
-            val minTemperature = temperatureData.getInt("min")
-            val maxTemperature = temperatureData.getInt("max")
-            Pair(minTemperature, maxTemperature)
-        } else {
-            Log.e("fetchTemperature", "Failed to fetch temperature. Response: $response")
-            null
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
+        // Chamando a função para processar a resposta e extrair a temperatura
+        extractTemperatureFromResponse(responseBody)
+
+    } catch (e: IOException) {
+        Log.e("HomeScreen", "Failed to fetch temperature: ${e.message}")
+        0.0
     }
 }
+
+fun extractTemperatureFromResponse(response: String?): Double {
+    if (response.isNullOrEmpty()) return 0.0
+
+    val temperatureString = response.substringAfterLast(';').trim()
+    return temperatureString.toDoubleOrNull() ?: 0.0
+}
+
 
