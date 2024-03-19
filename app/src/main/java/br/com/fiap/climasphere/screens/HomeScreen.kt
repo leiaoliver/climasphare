@@ -106,7 +106,7 @@ fun HomeScreen(navController: NavController) {
 
             Box(
                 modifier = Modifier
-                    .clickable { navController.navigate("config_screen")
+                    .clickable { navController.navigate("configs")
                     }
             ) {
                 Image(
@@ -143,14 +143,13 @@ fun HomeScreen(navController: NavController) {
                     color = Color.White
                 )
 
-
-
                 Text(
                     text = "Pancadas de chuva",
                     style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium),
                     color = Color.White
                 )
             }
+
             Image(
                 painter = painterResource(id = R.drawable.rain),
                 contentDescription = "Icon Plus",
