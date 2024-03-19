@@ -55,9 +55,11 @@ import org.jsoup.nodes.Element
 fun HomeScreen(navController: NavController) {
 
     var temperature by remember { mutableStateOf(0.0) } // Inicializando como Double
+    var airQuality by remember { mutableStateOf("") } // Inicializando como string
 
     LaunchedEffect(Unit) {
         temperature = fetchTemperature()
+        airQuality = fetchAirQuality()
     }
 
 
@@ -307,7 +309,7 @@ fun HomeScreen(navController: NavController) {
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        text = "Ruim",
+                        text = airQuality,
                         style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium),
                         color = Color(0xFFE21919),
                         modifier = Modifier.padding(start = 40.dp)
@@ -333,12 +335,12 @@ suspend fun fetchTemperature(): Double {
     val username = "clima_oliveira_leia"
     val password = "IR5lkK5q40"
     val baseUrl = "https://api.meteomatics.com"
-    val endpoint = "/now/t_2m:C/-23.5505,-46.6333/csv"
+    val endpointTime = "/now/t_2m:C/-23.5505,-46.6333/csv"
 
     val client = OkHttpClient()
 
     val request = Request.Builder()
-        .url("$baseUrl$endpoint")
+        .url("$baseUrl$endpointTime")
         .header("Authorization", Credentials.basic(username, password))
         .build()
 
@@ -355,6 +357,7 @@ suspend fun fetchTemperature(): Double {
         Log.e("HomeScreen", "Failed to fetch temperature: ${e.message}")
         0.0
     }
+
 }
 
 fun extractTemperatureFromResponse(response: String?): Double {
@@ -362,6 +365,62 @@ fun extractTemperatureFromResponse(response: String?): Double {
 
     val temperatureString = response.substringAfterLast(';').trim()
     return temperatureString.toDoubleOrNull() ?: 0.0
+}
+
+suspend fun fetchAirQuality(): String {
+    val username = "clima_oliveira_leia"
+    val password = "IR5lkK5q40"
+    val baseUrl = "https://api.meteomatics.com"
+    val endpoint = "now/pm10:ugm3/-23.5505,-46.6333/json"
+
+    val client = OkHttpClient()
+
+    val request = Request.Builder()
+        .url("$baseUrl$endpoint")
+        .header("Authorization", Credentials.basic(username, password))
+        .build()
+
+    return try {
+        val response = withContext(Dispatchers.IO) {
+            client.newCall(request).execute()
+        }
+        val responseBody = response.body?.string()
+
+        // Chamando a função para processar a resposta e extrair a qualidade do ar
+        extractAirQualityFromResponse(responseBody)
+
+    } catch (e: IOException) {
+        Log.e("HomeScreen", "Failed to fetch temperature: ${e.message}")
+        ""
+    }
+
+}
+
+fun extractAirQualityFromResponse(jsonString: String?): String {
+    if (jsonString.isNullOrEmpty()) return ""
+
+    val jsonObject = JSONObject(jsonString)
+    val dataArray = jsonObject.getJSONArray("data")
+    if (dataArray.length() > 0) {
+        val dataObject = dataArray.getJSONObject(0)
+        val coordinatesArray = dataObject.getJSONArray("coordinates")
+        if (coordinatesArray.length() > 0) {
+            val coordinatesObject = coordinatesArray.getJSONObject(0)
+            val datesArray = coordinatesObject.getJSONArray("dates")
+            if (datesArray.length() > 0) {
+                val dateObject = datesArray.getJSONObject(0)
+                if(dateObject.getDouble("value") < 50) {
+                    return "Bom."
+                }
+                else if(dateObject.getDouble("value") > 50 && dateObject.getDouble("value") < 100) {
+                    return "Médio."
+                }
+                else
+                    return "Ruim."
+            }
+        }
+    }
+    return ""
 }
 
 
